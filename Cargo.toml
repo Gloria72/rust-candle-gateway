@@ -1,0 +1,15 @@
+[package]
+name = "rust-candle-gateway"
+version = "0.1.0"
+edition = "2021"
+description = "Dependency-light Rust inference gateway with a Candle-ready engine boundary."
+license = "MIT"
+
+[features]
+default = []
+candle = []
+
+[[bin]]
+name = "rust-candle-gateway"
+path = "src/main.rs"
+
