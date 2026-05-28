@@ -180,3 +180,52 @@ fn escape_json(value: &str) -> String {
         .replace('\r', "\\r")
 }
 
+#[cfg(test)]
+mod tests {
+    use super::{
+        escape_json, extract_json_number, extract_json_string, parse_method, parse_path,
+    };
+
+    #[test]
+    fn parses_method_and_path() {
+        let raw = "POST /v1/completions HTTP/1.1\r\nhost: localhost\r\n\r\n{}";
+
+        assert_eq!(parse_method(raw), "POST");
+        assert_eq!(parse_path(raw), "/v1/completions");
+    }
+
+    #[test]
+    fn parses_missing_request_line_safely() {
+        assert_eq!(parse_method(""), "");
+        assert_eq!(parse_path(""), "/");
+    }
+
+    #[test]
+    fn extracts_basic_json_fields() {
+        let body = r#"{"prompt":"Explain KV cache","max_tokens":32}"#;
+
+        assert_eq!(
+            extract_json_string(body, "prompt"),
+            Some("Explain KV cache".to_string())
+        );
+        assert_eq!(extract_json_number(body, "max_tokens"), Some(32));
+    }
+
+    #[test]
+    fn extracts_escaped_json_string() {
+        let body = r#"{"prompt":"say \"hello\" now"}"#;
+
+        assert_eq!(
+            extract_json_string(body, "prompt"),
+            Some("say \"hello\" now".to_string())
+        );
+    }
+
+    #[test]
+    fn escapes_json_response_text() {
+        assert_eq!(
+            escape_json("a \"quote\" and \\ slash\n"),
+            "a \\\"quote\\\" and \\\\ slash\\n"
+        );
+    }
+}

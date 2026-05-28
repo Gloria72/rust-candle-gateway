@@ -33,6 +33,15 @@ Metrics:
 curl -s http://127.0.0.1:8090/metrics
 ```
 
+## Test
+
+```bash
+cargo test
+cargo check
+```
+
+The current unit tests cover the mock engine token limits, rough token counting, metrics rendering, and the small HTTP parsing/JSON escaping helpers. They do not start a socket server yet, so they run quickly and do not need a model download.
+
 ## Candle Integration Plan
 
 To make this a real Candle service:

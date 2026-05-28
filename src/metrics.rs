@@ -45,3 +45,32 @@ impl Metrics {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::Metrics;
+
+    #[test]
+    fn metrics_start_at_zero() {
+        let metrics = Metrics::new();
+        let rendered = metrics.render_prometheus();
+
+        assert!(rendered.contains("rust_candle_gateway_requests_total 0"));
+        assert!(rendered.contains("rust_candle_gateway_errors_total 0"));
+        assert!(rendered.contains("rust_candle_gateway_generated_tokens_total 0"));
+        assert!(rendered.contains("rust_candle_gateway_latency_ms_total 0"));
+    }
+
+    #[test]
+    fn metrics_record_success_and_error() {
+        let metrics = Metrics::new();
+
+        metrics.record_success(7, 13);
+        metrics.record_error();
+
+        let rendered = metrics.render_prometheus();
+        assert!(rendered.contains("rust_candle_gateway_requests_total 2"));
+        assert!(rendered.contains("rust_candle_gateway_errors_total 1"));
+        assert!(rendered.contains("rust_candle_gateway_generated_tokens_total 7"));
+        assert!(rendered.contains("rust_candle_gateway_latency_ms_total 13"));
+    }
+}
