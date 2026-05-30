@@ -1,5 +1,7 @@
 # Rust Candle Gateway
 
+[![CI](https://github.com/Gloria72/rust-candle-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/Gloria72/rust-candle-gateway/actions/workflows/ci.yml)
+
 A small Rust HTTP gateway shaped like an inference service.
 
 The default engine is a mock implementation. That is intentional: the HTTP surface, request bounds, metrics, and engine trait can be checked before pulling in Candle, tokenizers, model weights, or GPU-specific setup.
